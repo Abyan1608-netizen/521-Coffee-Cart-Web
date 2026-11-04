@@ -1,25 +1,14 @@
-# 521 Coffee Cart — Website (konsep baru)
+# 521 Coffee Cart — Website
 
-Website publik 521 Coffee Cart: hero video layar penuh dengan efek *liquid glass*, lalu Cerita, Menu, Promo & Kabar, Testimoni, dan Lokasi/Jam buka.
+Website publik 521 Coffee Cart: tirai pembuka, Cerita, Menu yang digulir dengan stiker interaktif, Kabar (dengan headline), Testimoni, Lokasi & jam buka, dan panel Pesan lewat reseller terdekat atau aplikasi pesan antar.
 
-- **Teknologi:** React + TypeScript, Tailwind CSS, Vite. Huruf: Inter (Google Fonts).
-- **Data:** menu, promo, kabar, jam buka diambil langsung dari server 521 (`/kdata.js`, data yang diterbitkan HP Owner di aplikasi). Bila server tidak bisa dihubungi, dipakai salinan bawaan di `src/data.json`.
-- **Terbit otomatis:** setiap push ke `main`, GitHub Actions membangun dan menerbitkan ke GitHub Pages (`.github/workflows/pages.yml`).
-
-## Menjalankan di komputer
-```bash
-npm install
-npm run dev      # buka http://localhost:5173
-npm run build    # hasil di folder dist/
-```
+- **Satu file:** `web/index.html` (huruf Paralucent, logo 521, foto, dan data menu/kabar sudah tertanam di dalamnya). Animasi memakai GSAP dari cdnjs.
+- **Tampil rapi** di HP (potret & lanskap), tablet, dan desktop.
+- **Terbit otomatis:** setiap push ke `main`, GitHub Actions menerbitkan folder `web/` ke GitHub Pages (`.github/workflows/pages.yml`).
 
 ## Mengubah isi
-| Yang diubah | Di mana |
-|---|---|
-| Judul, teks hero, tombol | `src/App.tsx` → `Hero` |
-| Video latar | `src/App.tsx` → konstanta `VIDEO` |
-| Teks Cerita | `src/App.tsx` → `Story` |
-| Menu, promo, kabar, jam buka | Lewat aplikasi 521 (Atur & Kabar di HP Owner) — website ikut otomatis |
-| Warna & efek kaca | `src/index.css` (`.liquid-glass`) |
+Isi (teks, menu, harga, kabar, headline, reseller, warna, urutan bagian) diatur dari halaman **Pengaturan** di versi Claude (artifact "Kabar 521 Coffee"). Setelah diterbitkan di sana, salin ulang hasilnya ke `web/index.html` lalu push ke `main`.
+
+Versi website sebelumnya (React + Vite, hero video + liquid glass) tetap tersimpan di riwayat git, commit `46f2a98`.
 
 Aplikasi kasir & server ada di repo terpisah: `Abyan1608-netizen/521-Coffee-Cart`.
