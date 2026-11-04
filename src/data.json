@@ -1,0 +1,168 @@
+{
+ "store": {
+  "name": "521 Coffee Cart",
+  "tagline": "Teman kamu, belajar & bekerja",
+  "hours": "05.00–21.00",
+  "place": "Ciledug – Pinang, Tangerang",
+  "wa": "087738447822",
+  "ig": "@521coffeencookies",
+  "maps": "https://share.google/OcOeQ3HFGIeusC0vk",
+  "sched": [
+   {
+    "on": true,
+    "o": "05:00",
+    "c": "21:00"
+   },
+   {
+    "on": true,
+    "o": "05:00",
+    "c": "21:00"
+   },
+   {
+    "on": true,
+    "o": "05:00",
+    "c": "21:00"
+   },
+   {
+    "on": true,
+    "o": "05:00",
+    "c": "21:00"
+   },
+   {
+    "on": true,
+    "o": "05:00",
+    "c": "21:00"
+   },
+   {
+    "on": true,
+    "o": "05:00",
+    "c": "21:00"
+   },
+   {
+    "on": true,
+    "o": "05:00",
+    "c": "21:00"
+   }
+  ],
+  "testi": [
+   {
+    "id": "tmlfdf2",
+    "name": "Mahasiswi LIPIA",
+    "role": "",
+    "text": "Kamu kapan cobain 521 Coffee Cart?",
+    "stars": 5,
+    "img": "",
+    "draft": false
+   }
+  ]
+ },
+ "heroes": [
+  "media/37b3f0843ddad770817c568a79dd731a.jpg",
+  "media/f02e0bd129195b3321bf3e3ca43fab61.jpg",
+  "media/baf109b181d68b778930eca77135ea89.jpg",
+  "media/1dbc3759a42cd182cea13da4c8adf096.jpg"
+ ],
+ "menu": [
+  {
+   "n": "Palm Sugar",
+   "p": 14000,
+   "c": "Kopi Susu",
+   "s": "170 ml",
+   "d": "Kopi 100% Arabika dengan gula aren, creamy creamer, dan susu. Manis, creamy, dan balance.",
+   "col": "#c27a2c",
+   "img": ""
+  },
+  {
+   "n": "Butterscotch",
+   "p": 20000,
+   "c": "Kopi Susu",
+   "s": "170 ml",
+   "d": "Kopi 100% Arabika dengan gula aren, butterscotch, creamy creamer, dan susu. Manis, creamy, dengan aroma butterscotch.",
+   "col": "#f2a91c",
+   "img": "media/1dbc3759a42cd182cea13da4c8adf096.jpg"
+  },
+  {
+   "n": "Black Caffe",
+   "p": 13000,
+   "c": "Coffee",
+   "s": "180 ml",
+   "d": "Kopi 100% Arabika tanpa susu dan gula. Clean, ringan, dan menonjolkan karakter asli kopi.",
+   "col": "#8b5e3c",
+   "img": "media/baf109b181d68b778930eca77135ea89.jpg"
+  },
+  {
+   "n": "Matcha Latte",
+   "p": 20000,
+   "c": "Non Coffee",
+   "s": "170 ml",
+   "d": "Matcha dengan susu creamy. Lembut, smooth, dan cocok untuk teman aktivitas.",
+   "col": "#6a8d4e",
+   "img": "media/f02e0bd129195b3321bf3e3ca43fab61.jpg"
+  }
+ ],
+ "posts": [
+  {
+   "id": "k174b45",
+   "type": "promo",
+   "title": "Diskon Setiap Jum'at",
+   "body": "Pembelian khusus Matcha dan Butterscoth",
+   "badge": "DISKON 20% Teman!",
+   "start": "2026-10-05",
+   "end": "2026-10-10",
+   "date": "",
+   "time": "",
+   "place": "",
+   "dval": 3000,
+   "dtype": "rp",
+   "img": ""
+  },
+  {
+   "id": "kijsj7m",
+   "type": "promo",
+   "title": "Black Caffe Day",
+   "body": "Khusus member subscribtion",
+   "badge": "KASIH PAHAM PECINTA BLACK CAFFE",
+   "start": "2026-10-07",
+   "end": "2026-11-03",
+   "date": "",
+   "time": "",
+   "place": "",
+   "dval": 1000,
+   "dtype": "rp",
+   "img": "media/ff45202629a2f56777a1aba44f4436c9.jpg"
+  },
+  {
+   "id": "k10gjs5",
+   "type": "event",
+   "title": "Lari Sebelum Ngopi!",
+   "body": "Mari kita kumpul bareng, teman! Fun run sepertinya asik kita jadwaklan!",
+   "badge": "",
+   "start": "",
+   "end": "",
+   "date": "2026-11-29",
+   "time": "06.00 WIB",
+   "place": "Pejaten, Depan Mall Penvil",
+   "dval": "",
+   "dtype": "",
+   "img": ""
+  },
+  {
+   "id": "kp0yvuk",
+   "type": "news",
+   "title": "521 bareng Kak Mikayla ✨️",
+   "body": "Halo teman! ketika ada di suatu event kami menjadi sponsor utama untuk kak Mikayla! Siapa yang kenal dengan Kak Mikayka ahli gizi pilihanmu!? 🤚",
+   "badge": "",
+   "start": "",
+   "end": "",
+   "date": "2026-10-13",
+   "time": "",
+   "place": "",
+   "dval": "",
+   "dtype": "",
+   "img": "media/e2ec71bda394169635fc76b0ca7e663b.jpg"
+  }
+ ],
+ "hide": [
+  "kd8amh9"
+ ]
+}
