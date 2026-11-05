@@ -20,6 +20,10 @@ Website mengambil data terbaru dari server aplikasi (`https://coffee521-api.coff
 Desain, foto, ikon, dan urutan bagian tetap dari `web/index.html`. Bila server tidak bisa dihubungi, isi bawaan di file ini yang tampil.
 Kode sinkronnya ditambahkan oleh `tools/patch_sinkron_aplikasi.py` (jalankan ulang bila `web/index.html` diganti dengan versi baru dari Claude).
 
+Supaya tirai pembuka tetap mulus: data terakhir disimpan di HP/komputer pengunjung (langsung tampil saat dibuka lagi), dan pada kunjungan pertama tirai menunggu data paling lama ±3 detik. Data yang datang saat tirai masih tertutup dipasang di balik tirai; saat tirai sedang membuka, pemasangan menunggu sampai tirai selesai.
+
+Uji otomatis (Playwright): `tools/uji/uji-sinkron-aplikasi.js` (isi ikut aplikasi) dan `tools/uji/uji-tirai-pembuka.js <jeda-data-ms> <jumlah-muat>` (tirai tidak hilang mendadak).
+
 ## Mengubah desain
 Desain diatur dari halaman **Pengaturan** di versi Claude (artifact "Kabar 521 Coffee"). Setelah diterbitkan di sana, salin hasilnya ke `web/index.html`, jalankan `python3 tools/patch_sinkron_aplikasi.py`, lalu push ke `main`.
 

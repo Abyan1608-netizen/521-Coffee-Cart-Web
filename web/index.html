@@ -1269,9 +1269,9 @@ function setupDrape(){
   const on=()=>{read();if(!raf)raf=requestAnimationFrame(tick)};
   if(hero.classList.contains("curtain-go")){
     live=false;cur=1;put(1,0);
-    const start=()=>{if(intro)return;intro=1;read();const from=1,to=tgt,T=2600,t0=performance.now();
+    const start=()=>{if(intro)return;if(window.__k521hold&&window.__k521hold()){setTimeout(start,120);return}intro=1;if(hero.isConnected)window.__k521intro=1;read();const from=1,to=tgt,T=2600,t0=performance.now();
       const step=now=>{const k=Math.min(1,(now-t0)/T),e=k<.5?4*k*k*k:1-Math.pow(-2*k+2,3)/2,c=from+(to-from)*e;put(c,-Math.sin(Math.PI*k)*.85);
-        if(k<1)requestAnimationFrame(step);else{cur=c;live=true;on()}};
+        if(k<1)requestAnimationFrame(step);else{cur=c;live=true;if(hero.isConnected)window.__k521intro=2;on()}};
       requestAnimationFrame(step)};
     const go=()=>setTimeout(start,450);
     if(document.readyState==="complete")go();else{window.addEventListener("load",go,{once:true});setTimeout(start,2600)}
@@ -1776,7 +1776,13 @@ document.addEventListener("keydown",e=>{
 /*SINKRON-APLIKASI*/
 /* ---------- data langsung dari aplikasi 521 (Atur & Kabar di HP Owner) ---------- */
 const API="https://coffee521-api.coffee521.workers.dev";
-let liveRev=0,liveWait=false;
+/*SINKRON-2*/let liveRev=0,liveWait=false;
+const LKEY="k521live";
+function liveSave(rev,K){try{localStorage.setItem(LKEY,JSON.stringify({rev,K}))}catch(e){}}
+function liveCache(){if(window.claude&&claude.use)return;try{const c=JSON.parse(localStorage.getItem(LKEY)||"null");if(c&&+c.rev&&applyLive(c.K))liveRev=+c.rev}catch(e){}
+  liveFirst=!liveRev}
+/* kunjungan pertama (belum ada data tersimpan): tirai menunggu data aplikasi paling lama ±3 detik sebelum membuka */
+let liveFirst=false;window.__k521hold=()=>liveFirst&&performance.now()<3200;
 const absU=u=>{u=String(u||"");return /^(https:|data:image\/)/.test(u)?u:/^media\/[a-f0-9]{32}\.(jpg|png|webp|gif|avif)$/.test(u)?API+"/"+u:""};
 const str=v=>typeof v==="string"?v.trim():"";
 const lc=v=>String(v||"").trim().toLowerCase();
@@ -1811,15 +1817,22 @@ function applyLive(K){
   if(Wb.footer)T(S.footer,"bio",Wb.footer.bio);
   if(Wb.show&&typeof Wb.show==="object")Object.keys(S.layout.show).forEach(k=>{if(k!=="hero")S.layout.show[k]=Wb.show[k]!==false});
   return true}
-function liveRender(){if(opOpen||SV.on||$("#modal").innerHTML||cfgOpen){liveWait=true;return}liveWait=false;const y=window.scrollY;render();renderOrder();window.scrollTo(0,y);refreshST()}
+function liveRender(){clearTimeout(liveRender.t);if(opOpen||SV.on||$("#modal").innerHTML||cfgOpen){liveWait=true;return}
+  const cur=$(".hero.curtain-go"),ph=window.__k521intro|0;
+  if(cur&&ph===1){liveWait=true;liveRender.t=setTimeout(liveRender,300);return}/* tirai sedang membuka: tunggu selesai */
+  liveWait=false;const keep=!!cur&&ph===0,y=window.scrollY;/* tirai masih tertutup: gambar ulang di baliknya, tirai tetap */
+  if(keep)firstPaint=true;try{render();renderOrder()}finally{if(keep)firstPaint=false}
+  window.scrollTo(0,y);refreshST()
+  if(!keep&&!RM){const r=$("#root");try{if(r&&r.animate)r.animate([{opacity:.45},{opacity:1}],{duration:420,easing:"ease-out"})}catch(e){}}}/* isi baru muncul halus */
 function liveLoad(){if(window.claude&&claude.use)return;/* di editor Claude: pakai isi editor */
   const sc=document.createElement("script");sc.src=API+"/kdata.js?t="+Math.floor(Date.now()/30000);sc.async=true;
-  sc.onload=()=>{sc.remove();const rev=+window.__KREV||0;if(!rev||rev===liveRev)return;liveRev=rev;try{if(applyLive(window.__K))liveRender()}catch(e){}};
-  sc.onerror=()=>sc.remove();document.head.appendChild(sc)}
+  sc.onload=()=>{sc.remove();liveFirst=false;const rev=+window.__KREV||0;if(!rev||rev===liveRev)return;liveRev=rev;liveSave(rev,window.__K);try{if(applyLive(window.__K))liveRender()}catch(e){}};
+  sc.onerror=()=>{sc.remove();liveFirst=false};document.head.appendChild(sc)}
 window.__k521={liveLoad,liveRender,st:()=>({S,opOpen,liveWait}),setOp:v=>{opOpen=v}};/* untuk uji otomatis */
 
 /* ---------- mulai ---------- */
 ["order","cfgbox","pubbar","modal","toast"].forEach(id=>{if(!$("#"+id)){const d=document.createElement("div");d.id=id;document.body.appendChild(d)}});
+liveCache();/* isi terbaru yang tersimpan di HP ini: langsung tampil tanpa menunggu server */
 render();renderOrder();brewLoop(true);firstPaint=false;
 liveLoad();setInterval(()=>{if(document.visibilityState==='visible')liveLoad();else if(liveWait)liveRender()},60000);
 document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')liveLoad()});

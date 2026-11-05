@@ -6,7 +6,9 @@ Desain, foto, ikon, dan susunan halaman tetap dari web/index.html. Bila server t
 import pathlib, sys
 P = pathlib.Path(__file__).resolve().parents[1] / "web/index.html"
 s = P.read_text()
-if "/*SINKRON-APLIKASI*/" in s:
+V1 = "/*SINKRON-APLIKASI*/" not in s
+V2 = "/*SINKRON-2*/" not in s
+if not V1 and not V2:
     print("Sudah dipatch."); sys.exit(0)
 
 def rep(old, new, count=1):
@@ -15,16 +17,6 @@ def rep(old, new, count=1):
     if n != count:
         raise SystemExit(f"Jumlah cocok {n} != {count}: {old[:120]}")
     s = s.replace(old, new)
-
-# foto dari server aplikasi (https) juga boleh dipakai
-rep('const M=v=>!v?"":((S.media&&S.media[v])||(/^data:/.test(String(v))?v:""));',
-    'const M=v=>!v?"":((S.media&&S.media[v])||(/^(data:|https:\\/\\/)/.test(String(v))?v:""));')
-# menu yang ditandai Habis di kasir
-rep('can=S.order.on&&it.order!==false,q=cart[it.id]||0', 'can=S.order.on&&it.order!==false&&!it.out,q=cart[it.id]||0')
-rep("""+'<span>Pesan</span>'+(q?'<em>'+q+'</em>':"")+'</button>':"")+'</div></figcaption></figure>';""",
-    """+'<span>Pesan</span>'+(q?'<em>'+q+'</em>':"")+'</button>':it.out?'<span class="pc-out">Habis hari ini</span>':"")+'</div></figcaption></figure>';""")
-rep('const oItems=()=>S.menu.items.filter(m=>m.show!==false&&m.order!==false);', 'const oItems=()=>S.menu.items.filter(m=>m.show!==false&&m.order!==false&&!m.out);')
-rep('.pc-add{--ring:rgba(255,48,10,.65)}', '.pc-out{flex:none;display:inline-flex;align-items:center;height:34px;padding:0 12px;border-radius:999px;background:rgba(10,10,10,.82);color:#fff;font:700 13px var(--f-d)}.pc-add{--ring:rgba(255,48,10,.65)}')
 
 LIVE = r'''/*SINKRON-APLIKASI*/
 /* ---------- data langsung dari aplikasi 521 (Atur & Kabar di HP Owner) ---------- */
@@ -71,8 +63,66 @@ function liveLoad(){if(window.claude&&claude.use)return;/* di editor Claude: pak
   sc.onerror=()=>sc.remove();document.head.appendChild(sc)}
 window.__k521={liveLoad,liveRender,st:()=>({S,opOpen,liveWait}),setOp:v=>{opOpen=v}};/* untuk uji otomatis */
 '''
-rep("/* ---------- mulai ---------- */", LIVE + "\n/* ---------- mulai ---------- */")
-rep("render();renderOrder();brewLoop(true);firstPaint=false;",
-    "render();renderOrder();brewLoop(true);firstPaint=false;\nliveLoad();setInterval(()=>{if(document.visibilityState==='visible')liveLoad();else if(liveWait)liveRender()},60000);\ndocument.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')liveLoad()});")
+
+
+def v1():
+    global s
+    # foto dari server aplikasi (https) juga boleh dipakai
+    rep('const M=v=>!v?"":((S.media&&S.media[v])||(/^data:/.test(String(v))?v:""));',
+        'const M=v=>!v?"":((S.media&&S.media[v])||(/^(data:|https:\\/\\/)/.test(String(v))?v:""));')
+    # menu yang ditandai Habis di kasir
+    rep('can=S.order.on&&it.order!==false,q=cart[it.id]||0', 'can=S.order.on&&it.order!==false&&!it.out,q=cart[it.id]||0')
+    rep("""+'<span>Pesan</span>'+(q?'<em>'+q+'</em>':"")+'</button>':"")+'</div></figcaption></figure>';""",
+        """+'<span>Pesan</span>'+(q?'<em>'+q+'</em>':"")+'</button>':it.out?'<span class="pc-out">Habis hari ini</span>':"")+'</div></figcaption></figure>';""")
+    rep('const oItems=()=>S.menu.items.filter(m=>m.show!==false&&m.order!==false);', 'const oItems=()=>S.menu.items.filter(m=>m.show!==false&&m.order!==false&&!m.out);')
+    rep('.pc-add{--ring:rgba(255,48,10,.65)}', '.pc-out{flex:none;display:inline-flex;align-items:center;height:34px;padding:0 12px;border-radius:999px;background:rgba(10,10,10,.82);color:#fff;font:700 13px var(--f-d)}.pc-add{--ring:rgba(255,48,10,.65)}')
+    rep("/* ---------- mulai ---------- */", LIVE + "\n/* ---------- mulai ---------- */")
+    rep("render();renderOrder();brewLoop(true);firstPaint=false;",
+        "render();renderOrder();brewLoop(true);firstPaint=false;\nliveLoad();setInterval(()=>{if(document.visibilityState==='visible')liveLoad();else if(liveWait)liveRender()},60000);\ndocument.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')liveLoad()});")
+
+
+if V1:
+    v1()
+
+# ---------------------------------------------------------------- v2 (perbaikan tirai pembuka)
+# Gejala: saat halaman dibuka, tirai merah "521" langsung hilang tanpa animasi, lalu isi halaman berganti di depan mata.
+# Sebab: data dari aplikasi datang ±0,5–1 detik setelah halaman tampil, lalu seluruh halaman digambar ulang tanpa tirai.
+# Perbaikan:
+#  1. Data terakhir disimpan di HP pengunjung, jadi kunjungan berikutnya langsung tampil dengan isi terbaru (tidak digambar ulang).
+#  2. Bila data baru datang saat tirai masih tertutup, halaman digambar ulang DI BALIK tirai (tirai tetap ada & membuka seperti biasa).
+#  3. Bila data datang saat tirai sedang membuka, gambar ulang menunggu sampai tirai selesai membuka.
+V2_STATE = r'''/*SINKRON-2*/let liveRev=0,liveWait=false;
+const LKEY="k521live";
+function liveSave(rev,K){try{localStorage.setItem(LKEY,JSON.stringify({rev,K}))}catch(e){}}
+function liveCache(){if(window.claude&&claude.use)return;try{const c=JSON.parse(localStorage.getItem(LKEY)||"null");if(c&&+c.rev&&applyLive(c.K))liveRev=+c.rev}catch(e){}
+  liveFirst=!liveRev}
+/* kunjungan pertama (belum ada data tersimpan): tirai menunggu data aplikasi paling lama ±3 detik sebelum membuka */
+let liveFirst=false;window.__k521hold=()=>liveFirst&&performance.now()<3200;'''
+V2_RENDER = r'''function liveRender(){clearTimeout(liveRender.t);if(opOpen||SV.on||$("#modal").innerHTML||cfgOpen){liveWait=true;return}
+  const cur=$(".hero.curtain-go"),ph=window.__k521intro|0;
+  if(cur&&ph===1){liveWait=true;liveRender.t=setTimeout(liveRender,300);return}/* tirai sedang membuka: tunggu selesai */
+  liveWait=false;const keep=!!cur&&ph===0,y=window.scrollY;/* tirai masih tertutup: gambar ulang di baliknya, tirai tetap */
+  if(keep)firstPaint=true;try{render();renderOrder()}finally{if(keep)firstPaint=false}
+  window.scrollTo(0,y);refreshST()
+  if(!keep&&!RM){const r=$("#root");try{if(r&&r.animate)r.animate([{opacity:.45},{opacity:1}],{duration:420,easing:"ease-out"})}catch(e){}}}/* isi baru muncul halus */'''
+
+
+def v2():
+    global s
+    rep("let liveRev=0,liveWait=false;", V2_STATE)
+    rep('function liveRender(){if(opOpen||SV.on||$("#modal").innerHTML||cfgOpen){liveWait=true;return}liveWait=false;const y=window.scrollY;render();renderOrder();window.scrollTo(0,y);refreshST()}', V2_RENDER)
+    rep("sc.onload=()=>{sc.remove();const rev=+window.__KREV||0;if(!rev||rev===liveRev)return;liveRev=rev;try{",
+        "sc.onload=()=>{sc.remove();liveFirst=false;const rev=+window.__KREV||0;if(!rev||rev===liveRev)return;liveRev=rev;liveSave(rev,window.__K);try{")
+    rep("sc.onerror=()=>sc.remove();", "sc.onerror=()=>{sc.remove();liveFirst=false};")
+    rep("const start=()=>{if(intro)return;intro=1;", "const start=()=>{if(intro)return;if(window.__k521hold&&window.__k521hold()){setTimeout(start,120);return}intro=1;if(hero.isConnected)window.__k521intro=1;")
+    rep("if(k<1)requestAnimationFrame(step);else{cur=c;live=true;on()}",
+        "if(k<1)requestAnimationFrame(step);else{cur=c;live=true;if(hero.isConnected)window.__k521intro=2;on()}")
+    rep("render();renderOrder();brewLoop(true);firstPaint=false;\nliveLoad();",
+        "liveCache();/* isi terbaru yang tersimpan di HP ini: langsung tampil tanpa menunggu server */\nrender();renderOrder();brewLoop(true);firstPaint=false;\nliveLoad();")
+
+
+if V2:
+    v2()
+
 P.write_text(s)
-print("OK: website kini mengikuti data aplikasi 521.")
+print("OK: website mengikuti data aplikasi 521" + (" (lengkap)" if V1 else " (diperbarui: tirai pembuka tidak hilang mendadak)") + ".")
