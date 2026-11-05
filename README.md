@@ -22,6 +22,8 @@ Kode sinkronnya ditambahkan oleh `tools/patch_sinkron_aplikasi.py` (jalankan ula
 
 Supaya tirai pembuka tetap mulus: data terakhir disimpan di HP/komputer pengunjung (langsung tampil saat dibuka lagi), dan pada kunjungan pertama tirai menunggu data paling lama ±3 detik. Data yang datang saat tirai masih tertutup dipasang di balik tirai; saat tirai sedang membuka, pemasangan menunggu sampai tirai selesai.
 
+**Ringan di HP:** `tools/optimasi_hp.py` (otomatis saat terbit) menjeda animasi yang sedang tidak terlihat, menghentikan perhitungan yang terulang tiap frame, dan memakai foto yang sama persis tanpa ditulis berulang. Tampilan tidak berubah.
+
 Uji otomatis (Playwright): `tools/uji/uji-sinkron-aplikasi.js` (isi ikut aplikasi) dan `tools/uji/uji-tirai-pembuka.js <jeda-data-ms> <jumlah-muat>` (tirai tidak hilang mendadak).
 
 ## Mengubah desain

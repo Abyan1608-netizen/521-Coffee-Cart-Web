@@ -15,7 +15,7 @@ const delay=+process.argv[2]||800,loads=+process.argv[3]||2,tag=process.argv[4]|
  for(let n=0;n<loads;n++){
   if(n>0&&process.env.NEWREV){rev=6;base.store.web.hero.title='Judul aplikasi baru'}
   await p.goto('http://127.0.0.1:8097/index.html',{waitUntil:'commit'});await p.waitForSelector('.hero');const t0=Date.now();const S=[];let prev=null;
-  for(let i=0;i<55;i++){const s=await p.evaluate(()=>{const h=document.querySelector('.hero');return{cg:!!(h&&h.classList.contains('curtain-go')),cl:h?h.style.getPropertyValue('--close'):'',title:(document.querySelector('.hero .h1')||{}).textContent||'',ph:window.__k521intro|0}});
+  for(let i=0;i<55;i++){const s=await p.evaluate(()=>{const h=document.querySelector('.hero');return{cg:!!(h&&h.classList.contains('curtain-go')),cl:h?((h.querySelector('.drape')&&h.querySelector('.drape').style.getPropertyValue('--close'))||h.style.getPropertyValue('--close')):'',title:(document.querySelector('.hero .h1')||{}).textContent||'',ph:window.__k521intro|0}});
     s.t=Date.now()-t0;S.push(s);if(n===0&&[3,8,14,20,30].includes(i))await p.screenshot({path:`/home/claude/work/v21/cur_${tag}_${n}_${i}.png`});await W(90)}
   if(process.env.TRACE)console.log(S.map(s=>s.t+':'+(s.cl||'-').slice(0,4)+(s.cg?'':'*')+'p'+s.ph+(s.title[0]==='J'?'J':'')).join(' '));
   // analisis: tirai tertutup (--close≈1) lalu harus turun bertahap; lompatan besar (>0.35 dalam satu sampel) = hilang mendadak
