@@ -22,6 +22,12 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - uses: actions/checkout@v4
+      - name: Cek sinkron dengan aplikasi 521 (tidak menggagalkan terbit)
+        run: |
+          python3 tools/patch_sinkron_aplikasi.py || true
+          code=$(curl -s -o /dev/null -w "%{http_code}" https://coffee521-api.coffee521.workers.dev/kdata.js || true)
+          echo "Server aplikasi /kdata.js: HTTP $code"
+          if [ "$code" != "200" ]; then echo "::warning::Server 521 belum menyajikan /kdata.js. Jalankan 'npx wrangler deploy' di folder server agar website ikut data aplikasi."; fi
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:

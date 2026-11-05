@@ -6,8 +6,22 @@ Website publik 521 Coffee Cart: tirai pembuka, Cerita, Menu yang digulir dengan 
 - **Tampil rapi** di HP (potret & lanskap), tablet, dan desktop.
 - **Terbit otomatis:** setiap push ke `main`, GitHub Actions menerbitkan folder `web/` ke GitHub Pages (`.github/workflows/pages.yml`).
 
-## Mengubah isi
-Isi (teks, menu, harga, kabar, headline, reseller, warna, urutan bagian) diatur dari halaman **Pengaturan** di versi Claude (artifact "Kabar 521 Coffee"). Setelah diterbitkan di sana, salin ulang hasilnya ke `web/index.html` lalu push ke `main`.
+## Mengubah isi — dari aplikasi 521 (otomatis)
+Website mengambil data terbaru dari server aplikasi (`https://coffee521-api.coffee521.workers.dev/kdata.js`) setiap dibuka dan tiap 1 menit:
+
+| Diubah di aplikasi (HP Owner) | Tampil di website |
+|---|---|
+| Atur → Identitas toko, Jam buka toko · Kabar → Info toko & kontak | Nama, lokasi, jam & jadwal buka, WhatsApp, Instagram, Maps |
+| Menu (harga, deskripsi, kategori, tandai **Habis**) | Kartu menu & panel Pesan (menu Habis tidak bisa dipesan) |
+| Kabar & promo (promo, diskon, kegiatan, kabar, testimoni) | Bagian Kabar & Testimoni (draf tidak tampil) |
+| Pesan → reseller & link ShopeeFood/GoFood/GrabFood | Panel Pesan |
+| **Atur → Website** | Judul & teks tampilan awal, pita teks, Cerita, judul Menu/Kabar/Testimoni, teks Lokasi & kaki halaman, tampil/sembunyikan bagian |
+
+Desain, foto, ikon, dan urutan bagian tetap dari `web/index.html`. Bila server tidak bisa dihubungi, isi bawaan di file ini yang tampil.
+Kode sinkronnya ditambahkan oleh `tools/patch_sinkron_aplikasi.py` (jalankan ulang bila `web/index.html` diganti dengan versi baru dari Claude).
+
+## Mengubah desain
+Desain diatur dari halaman **Pengaturan** di versi Claude (artifact "Kabar 521 Coffee"). Setelah diterbitkan di sana, salin hasilnya ke `web/index.html`, jalankan `python3 tools/patch_sinkron_aplikasi.py`, lalu push ke `main`.
 
 Versi website sebelumnya (React + Vite, hero video + liquid glass) tetap tersimpan di riwayat git, commit `46f2a98`.
 
