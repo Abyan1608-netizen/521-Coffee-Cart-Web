@@ -29,6 +29,8 @@ const K=(over)=>Object.assign({store:{name:'521 Coffee Cart',web:{}},menu:[
  console.log('2) Headline');
  ok(await head(p)==='Kabar terbaru','otomatis (aplikasi belum memilih) = kabar terbaru: '+await head(p));
  ok(p.errs.length===0,'tanpa error JS');await p.context().close();
+ p=await load(K({posts:K().posts.concat({id:'kp0yvuk',type:'news',title:'Pilihan editor website',date:'2026-10-01',created:'2026-10-01'})}));ok(await head(p)==='Pilihan editor website','aplikasi belum memilih → pilihan headline dari editor website tetap: '+await head(p));await p.context().close();
+ p=await load(Object.assign(K({posts:K().posts.concat({id:'kp0yvuk',type:'news',title:'Pilihan editor website',date:'2026-10-01',created:'2026-10-01'})}),{store:{name:'521',web:{news:{headMode:'auto'}}}}));ok(await head(p)==='Kabar terbaru','aplikasi memilih Otomatis → kabar terbaru');await p.context().close();
  p=await load(K({store:{name:'521',web:{news:{headMode:'pick',headId:'k2'}}}}));ok(await head(p)==='Nobar Final LIPIA','pilih kabar tertentu: '+await head(p));await p.context().close();
  p=await load(K({store:{name:'521',web:{news:{headMode:'off'}}}}));ok(await head(p)==='','tanpa headline');await p.context().close();
  p=await load(K({store:{name:'521',web:{news:{headMode:'pick',headId:'hilang'}}}}));ok(await head(p)==='Kabar terbaru','kabar pilihan sudah dihapus → kembali otomatis');await p.context().close();

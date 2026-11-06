@@ -1819,7 +1819,7 @@ function applyLive(K){
   if(Array.isArray(Wb.strip)&&Wb.strip.length)S.strip.items=Wb.strip.map(str).filter(Boolean).slice(0,12);
   if(Wb.story)["title","soft","body"].forEach(k=>T(S.story,k,Wb.story[k]));
   if(Wb.menu)["title","sub"].forEach(k=>T(S.menu,k,Wb.menu[k]));
-  if(Wb.news)["title","sub"].forEach(k=>T(S.news,k,Wb.news[k]));{const N=Wb.news||{};S.news.headMode=["auto","pick","off"].includes(N.headMode)?N.headMode:"auto";S.news.headId=str(N.headId)}
+  if(Wb.news)["title","sub"].forEach(k=>T(S.news,k,Wb.news[k]));{const N=Wb.news||{};if(["auto","pick","off"].includes(N.headMode)){S.news.headMode=N.headMode;S.news.headId=str(N.headId)}}/*HL-2*/
   if(Wb.testi)T(S.testi,"title",Wb.testi.title);
   if(Wb.visit)T(S.visit,"sub",Wb.visit.sub);
   if(Wb.footer)T(S.footer,"bio",Wb.footer.bio);

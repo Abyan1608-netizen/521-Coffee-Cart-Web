@@ -9,7 +9,10 @@ s = P.read_text()
 V1 = "/*SINKRON-APLIKASI*/" not in s
 V2 = "/*SINKRON-2*/" not in s
 V3 = "/*SINKRON-3*/" not in s
-if not V1 and not V2 and not V3:
+HL_OLD = '''{const N=Wb.news||{};S.news.headMode=["auto","pick","off"].includes(N.headMode)?N.headMode:"auto";S.news.headId=str(N.headId)}'''
+HL_NEW = '''{const N=Wb.news||{};if(["auto","pick","off"].includes(N.headMode)){S.news.headMode=N.headMode;S.news.headId=str(N.headId)}}/*HL-2*/'''
+V3B = HL_OLD in s
+if not V1 and not V2 and not V3 and not V3B:
     print("Sudah dipatch."); sys.exit(0)
 
 def rep(old, new, count=1):
@@ -137,11 +140,14 @@ def v3():
         'const im=absU(m.img);if(im)it.img=im;it.out=!!m.o;return it})}')
     rep('if(Wb.news)["title","sub"].forEach(k=>T(S.news,k,Wb.news[k]));',
         'if(Wb.news)["title","sub"].forEach(k=>T(S.news,k,Wb.news[k]));'
-        '{const N=Wb.news||{};S.news.headMode=["auto","pick","off"].includes(N.headMode)?N.headMode:"auto";S.news.headId=str(N.headId)}')
+        '{const N=Wb.news||{};if(["auto","pick","off"].includes(N.headMode)){S.news.headMode=N.headMode;S.news.headId=str(N.headId)}}/*HL-2*/')
 
 
 if V3:
     v3()
+# 3b. headline: selama Owner belum memilih di aplikasi, pilihan headline dari editor website tetap dipakai
+if V3B:
+    rep(HL_OLD, HL_NEW)
 
 P.write_text(s)
 print("OK: website mengikuti data aplikasi 521" + (" (lengkap)" if V1 else " (diperbarui: headline & kartu menu dari aplikasi)") + ".")
