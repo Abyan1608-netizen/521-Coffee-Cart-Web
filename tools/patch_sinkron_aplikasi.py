@@ -8,7 +8,8 @@ P = pathlib.Path(__file__).resolve().parents[1] / "web/index.html"
 s = P.read_text()
 V1 = "/*SINKRON-APLIKASI*/" not in s
 V2 = "/*SINKRON-2*/" not in s
-if not V1 and not V2:
+V3 = "/*SINKRON-3*/" not in s
+if not V1 and not V2 and not V3:
     print("Sudah dipatch."); sys.exit(0)
 
 def rep(old, new, count=1):
@@ -124,5 +125,23 @@ def v2():
 if V2:
     v2()
 
+# ---------------------------------------------------------------- v3 (masukan tim, 6 Nov 2026)
+# 1. Keterangan kecil di kartu menu ("KOPI SUSU · 170 ML") & deskripsi: selalu persis dari aplikasi (Kategori · Ukuran cup,
+#    atau "Keterangan di website" bila diisi). Dulu, kolom yang kosong di aplikasi diam-diam memakai isi lama website.
+# 2. Foto kartu menu bisa diganti dari aplikasi (Atur → Website → Kartu menu).
+# 3. Headline Kabar diatur dari aplikasi: otomatis (kabar terbaru), pilih kabar tertentu, atau tanpa headline.
+def v3():
+    global s
+    rep('it.n=str(m.n);it.p=Number(m.p)||0;["c","s","d"].forEach(k=>{if(str(m[k]))it[k]=str(m[k])});it.out=!!m.o;return it})}',
+        'it.n=str(m.n);it.p=Number(m.p)||0;/*SINKRON-3*/it.c=str(m.c);it.s=str(m.s);it.d=str(m.d);if(typeof m.lb==="string"){it.c=str(m.lb);it.s=""}'
+        'const im=absU(m.img);if(im)it.img=im;it.out=!!m.o;return it})}')
+    rep('if(Wb.news)["title","sub"].forEach(k=>T(S.news,k,Wb.news[k]));',
+        'if(Wb.news)["title","sub"].forEach(k=>T(S.news,k,Wb.news[k]));'
+        '{const N=Wb.news||{};S.news.headMode=["auto","pick","off"].includes(N.headMode)?N.headMode:"auto";S.news.headId=str(N.headId)}')
+
+
+if V3:
+    v3()
+
 P.write_text(s)
-print("OK: website mengikuti data aplikasi 521" + (" (lengkap)" if V1 else " (diperbarui: tirai pembuka tidak hilang mendadak)") + ".")
+print("OK: website mengikuti data aplikasi 521" + (" (lengkap)" if V1 else " (diperbarui: headline & kartu menu dari aplikasi)") + ".")

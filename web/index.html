@@ -1801,7 +1801,7 @@ function applyLive(K){
   if(Array.isArray(K.menu)&&K.menu.length){const old=S.menu.items;
     S.menu.items=K.menu.filter(m=>m&&str(m.n)).slice(0,40).map((m,i)=>{const o=old.find(x=>lc(x.n)===lc(m.n));
       const it=o?Object.assign({},o):{id:"app-"+lc(m.n).replace(/[^a-z0-9]+/g,"-")+"-"+i,glyph:"",lead:"",after:"",show:true,order:true,col:/^#[0-9a-f]{6}$/i.test(m.col)?m.col:"#FF300A",img:absU(m.img)};
-      it.n=str(m.n);it.p=Number(m.p)||0;["c","s","d"].forEach(k=>{if(str(m[k]))it[k]=str(m[k])});it.out=!!m.o;return it})}
+      it.n=str(m.n);it.p=Number(m.p)||0;/*SINKRON-3*/it.c=str(m.c);it.s=str(m.s);it.d=str(m.d);if(typeof m.lb==="string"){it.c=str(m.lb);it.s=""}const im=absU(m.img);if(im)it.img=im;it.out=!!m.o;return it})}
   if(Array.isArray(K.posts)){const old=new Map(S.news.posts.map(p=>[p.id,p]));
     S.news.posts=K.posts.filter(p=>p&&p.id&&!p.draft).slice(0,40).map(p=>{const o=old.get(p.id)||{},x={};
       ["id","type","title","body","badge","start","end","date","time","place","code","created"].forEach(k=>x[k]=p[k]==null?"":String(p[k]));
@@ -1819,7 +1819,7 @@ function applyLive(K){
   if(Array.isArray(Wb.strip)&&Wb.strip.length)S.strip.items=Wb.strip.map(str).filter(Boolean).slice(0,12);
   if(Wb.story)["title","soft","body"].forEach(k=>T(S.story,k,Wb.story[k]));
   if(Wb.menu)["title","sub"].forEach(k=>T(S.menu,k,Wb.menu[k]));
-  if(Wb.news)["title","sub"].forEach(k=>T(S.news,k,Wb.news[k]));
+  if(Wb.news)["title","sub"].forEach(k=>T(S.news,k,Wb.news[k]));{const N=Wb.news||{};S.news.headMode=["auto","pick","off"].includes(N.headMode)?N.headMode:"auto";S.news.headId=str(N.headId)}
   if(Wb.testi)T(S.testi,"title",Wb.testi.title);
   if(Wb.visit)T(S.visit,"sub",Wb.visit.sub);
   if(Wb.footer)T(S.footer,"bio",Wb.footer.bio);

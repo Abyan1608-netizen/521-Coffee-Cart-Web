@@ -16,6 +16,8 @@ Website mengambil data terbaru dari server aplikasi (`https://coffee521-api.coff
 | Kabar & promo (promo, diskon, kegiatan, kabar, testimoni) | Bagian Kabar & Testimoni (draf tidak tampil) |
 | Pesan → reseller & link ShopeeFood/GoFood/GrabFood | Panel Pesan |
 | **Atur → Website** | Judul & teks tampilan awal, pita teks, Cerita, judul Menu/Kabar/Testimoni, teks Lokasi & kaki halaman, tampil/sembunyikan bagian |
+| **Atur → Website → Headline Kabar** (atau "Jadikan headline" di tiap promo/kabar) | Kartu headline paling atas di bagian Kabar: otomatis, pilih sendiri, atau tanpa headline |
+| **Atur → Website → Kartu menu** | Keterangan kecil di kartu menu (otomatis Kategori · Ukuran cup, tulis sendiri, atau tanpa keterangan) & foto kartu |
 
 Desain, foto, ikon, dan urutan bagian tetap dari `web/index.html`. Bila server tidak bisa dihubungi, isi bawaan di file ini yang tampil.
 Kode sinkronnya ditambahkan oleh `tools/patch_sinkron_aplikasi.py` (jalankan ulang bila `web/index.html` diganti dengan versi baru dari Claude).
@@ -24,7 +26,7 @@ Supaya tirai pembuka tetap mulus: data terakhir disimpan di HP/komputer pengunju
 
 **Ringan di HP:** `tools/optimasi_hp.py` (otomatis saat terbit) menjeda animasi yang sedang tidak terlihat, menghentikan perhitungan yang terulang tiap frame, dan memakai foto yang sama persis tanpa ditulis berulang. Tampilan tidak berubah.
 
-Uji otomatis (Playwright): `tools/uji/uji-sinkron-aplikasi.js` (isi ikut aplikasi) dan `tools/uji/uji-tirai-pembuka.js <jeda-data-ms> <jumlah-muat>` (tirai tidak hilang mendadak).
+Uji otomatis (Playwright): `tools/uji/uji-sinkron-aplikasi.js` (isi ikut aplikasi), `tools/uji/uji-headline-kartu.js` (headline & kartu menu) dan `tools/uji/uji-tirai-pembuka.js <jeda-data-ms> <jumlah-muat>` (tirai tidak hilang mendadak).
 
 ## Mengubah desain
 Desain diatur dari halaman **Pengaturan** di versi Claude (artifact "Kabar 521 Coffee"). Setelah diterbitkan di sana, salin hasilnya ke `web/index.html`, jalankan `python3 tools/patch_sinkron_aplikasi.py`, lalu push ke `main`.
